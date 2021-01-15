@@ -21,12 +21,33 @@ router.get('/:id', validateActionId, async (req, res) => {
 
 router.post('/', validateAction, (req, res, next) => {
     try {
-        const newAction = req.body;
         Actions.insert(req.body);
-        res.status(201).json(newAction);
+        res.status(201).json(req.body);
     } catch(err) {
-        next(err)
+        next(err);
     }
-})
+});
+
+router.put('/:id', validateActionId, async (req, res, next) => {
+    try {
+        Actions.update(req.params.id, req.body);
+        res.status(200).json(req.action);
+    } catch(err) {
+        next(err);
+    }
+});
+
+router.delete('/:id', validateActionId, async (req, res, next) => {
+    try {
+        Actions.remove(req.params.id);
+        res.status(200).json({ message: 'Action deleted.'})
+    } catch(err) {
+        next(err);
+    }
+});
+
+router.use((err, req, res, next) => {
+    res.status(500).json({ message: 'Server side error' });
+});
 
 module.exports = router;
