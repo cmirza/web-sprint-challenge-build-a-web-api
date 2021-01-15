@@ -30,11 +30,11 @@ router.post('/', validateAction, (req, res, next) => {
 
 router.put('/:id', validateActionId, async (req, res, next) => {
     try {
-        if(!req.body){
-            res.status(400).json({ message: 'Required data missing.' });
-        } else {
+        if (req.body.description && req.body.notes){
             const data = await Actions.update(req.params.id, req.body);
             res.status(200).json(data);
+        } else {
+            res.status(400).json({ message: 'Required data missing.' });
         }
     } catch(err) {
         next(err);

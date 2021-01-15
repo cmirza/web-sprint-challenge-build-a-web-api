@@ -44,8 +44,12 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:id', validateProjectId, async (req, res, next) => {
     try {
-        const data = await Projects.update(req.params.id, req.body);
-        res.status(200).json(data);
+        if (req.body.description || req.body.notes){
+            const data = await Projects.update(req.params.id, req.body);
+            res.status(200).json(data);
+        } else {
+            res.status(400).json({ message: 'Required data missing.' });
+        }
     } catch(err) {
         next(err);
     }
