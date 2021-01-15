@@ -30,8 +30,12 @@ router.post('/', validateAction, (req, res, next) => {
 
 router.put('/:id', validateActionId, async (req, res, next) => {
     try {
-        Actions.update(req.params.id, req.body);
-        res.status(200).json(req.action);
+        if(!req.body){
+            res.status(400).json({ message: 'Required data missing.' });
+        } else {
+            const data = await Actions.update(req.params.id, req.body);
+            res.status(200).json(data);
+        }
     } catch(err) {
         next(err);
     }
@@ -39,7 +43,7 @@ router.put('/:id', validateActionId, async (req, res, next) => {
 
 router.delete('/:id', validateActionId, async (req, res, next) => {
     try {
-        Actions.remove(req.params.id);
+        await Actions.remove(req.params.id);
         res.status(200).json({ message: 'Action deleted.'})
     } catch(err) {
         next(err);

@@ -30,11 +30,15 @@ router.get('/:id/actions', validateProjectId, async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    try {
-        const data = await Projects.insert(req.body);
-        res.status(201).json(data);
-    } catch(err) {
-        next(err);
+    if (!req.body.name || !req.body.description) {
+        res.status(400).json({ message: 'Missing required data.' });
+    } else {
+        try {
+            const data = await Projects.insert(req.body);
+            res.status(201).json(data);
+        } catch(err) {
+            next(err);
+        }
     }
 });
 
@@ -47,10 +51,10 @@ router.put('/:id', validateProjectId, async (req, res, next) => {
     }
 });
 
-router.delete(':/id', validateProjectId, async (req, res, next) => {
+router.delete('/:id', validateProjectId, async (req, res, next) => {
     try {
-        const data = await Projects.remove(req.params.id);
-        res.status(200).json(data);
+        await Projects.remove(req.params.id);
+        res.status(200).json({ message: 'Project deleted.'});
     } catch (err) {
         next(err);
     }
